@@ -6,8 +6,17 @@ plugins {
     id 'groovy'
 }
 
-group 'org.graphfity'
+group 'com.graphfity'
 version '1.0-SNAPSHOT'
+
+gradlePlugin {
+    plugins {
+        simplePlugin {
+            id = 'com.graphfity'
+            implementationClass = 'com.graphfity.plugin.main.GraphfityPlugin'
+        }
+    }
+}
 
 repositories {
     mavenCentral()

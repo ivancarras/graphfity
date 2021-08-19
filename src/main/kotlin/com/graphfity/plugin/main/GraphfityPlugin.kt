@@ -1,7 +1,7 @@
-package main
+package com.graphfity.plugin.main
 
-import model.NodeData
-import model.NodeType
+import com.graphfity.plugin.model.NodeData
+import com.graphfity.plugin.model.NodeType
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ProjectDependency

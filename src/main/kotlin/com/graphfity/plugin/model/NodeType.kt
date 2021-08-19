@@ -1,4 +1,4 @@
-package model
+package com.graphfity.plugin.model
 
 data class NodeType(
     val name: String,
