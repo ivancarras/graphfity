@@ -2,7 +2,7 @@ package com.graphfity.plugin.model
 
 data class NodeType(
     val name: String,
-    val regex: Regex,
+    val regex: String,
     val isEnabled: Boolean,
     val shape: String,
     val fillColor: String

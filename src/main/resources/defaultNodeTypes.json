@@ -1,0 +1,37 @@
+[
+  {
+    "name": "App",
+    "regex": "^.app\"$",
+    "isEnabled": true,
+    "shape": "box3d",
+    "fillColor": "#BAFFC9"
+  },
+  {
+    "name": "Feature",
+    "regex": "^.*feature.*\"$",
+    "isEnabled": true,
+    "shape": "tab",
+    "fillColor": "#E6F98A"
+  },
+  {
+    "name": "Component",
+    "regex": "^.*component.*\"$",
+    "isEnabled": true,
+    "shape": "component",
+    "fillColor": "#8AD8F9"
+  },
+  {
+    "name": "Libraries",
+    "regex": "^.*libraries.*\"$",
+    "isEnabled": false,
+    "shape": "cylinder",
+    "fillColor": "#FFACFA"
+  },
+  {
+    "name": "Core",
+    "regex": "^.*core.*\"$",
+    "isEnabled": false,
+    "shape": "hexagon",
+    "fillColor": "#D5625A"
+  }
+]

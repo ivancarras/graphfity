@@ -2,27 +2,29 @@ package com.graphfity.plugin.main
 
 import com.graphfity.plugin.model.NodeData
 import com.graphfity.plugin.model.NodeType
+import groovy.json.JsonSlurper
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ProjectDependency
-import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import java.io.File
 
 @Suppress("LeakingThis")
 abstract class GraphfityPluginExtension {
-    abstract val nodeTypes: ListProperty<NodeType>
+    abstract val nodeTypesPath: Property<String>
     abstract val dotPath: Property<String>
     abstract val projectRootPath: Property<String>
 
     init {
         dotPath.convention(DEFAULT_DOT_CHILD_PATH)
         projectRootPath.convention(DEFAULT_PROJECT_ROOT)
+        nodeTypesPath.convention(DEFAULT_NODE_TYPES_PATH)
     }
 
     companion object {
         private const val DEFAULT_DOT_CHILD_PATH = "gradle/dependency-graph/"
         private const val DEFAULT_PROJECT_ROOT = ":app"
+        private const val DEFAULT_NODE_TYPES_PATH = "src/main/resources"
     }
 }
 
@@ -34,7 +36,8 @@ class GraphfityPlugin : Plugin<Project> {
 
         project.task("graphfity") {
             it.doLast {
-                val nodeTypes = extension.nodeTypes.get()
+                val nodeTypesPath = extension.nodeTypesPath.get()
+                val nodeTypes = loadNodeTypes(nodeTypesPath)
                 val dotPath = extension.dotPath.get()
                 val projectRootPath = extension.projectRootPath.get()
                 val rootProject = project.findProject(projectRootPath)
@@ -48,6 +51,28 @@ class GraphfityPlugin : Plugin<Project> {
                 addDependenciesToFile(dotFile, dependencies)
                 generateGraph(dotFile)
             }
+        }
+    }
+
+    private fun loadNodeTypes(nodeTypesPath: String): List<NodeType> {
+        val jsonFile = File(nodeTypesPath)
+        val jsonObjects = JsonSlurper().parseText(jsonFile.readText())
+        return if (jsonObjects is List<*>) {
+            jsonObjects.fold(emptyList()) { acc, item ->
+                if (item is Map<*, *>) {
+                    acc + NodeType(
+                        name = item["name"] as String,
+                        regex = item["regex"] as String,
+                        isEnabled = item["isEnabled"] as Boolean,
+                        shape = item["shape"] as String,
+                        fillColor = item["fillColor"] as String
+                    )
+                } else {
+                    acc
+                }
+            }
+        } else {
+            emptyList()
         }
     }
 
@@ -122,7 +147,7 @@ class GraphfityPlugin : Plugin<Project> {
 
     private fun mapProjectToNode(project: Project, nodeTypes: List<NodeType>): NodeData? =
         nodeTypes.firstOrNull { nodeType ->
-            nodeType.regex.matches(project.path)
+            nodeType.regex.toRegex().matches(project.path)
         }?.let { nodeType ->
             NodeData(
                 path = project.path, nodeType = nodeType
