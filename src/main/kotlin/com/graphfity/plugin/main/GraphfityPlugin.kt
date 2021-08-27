@@ -9,28 +9,15 @@ import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.provider.Property
 import java.io.File
 
-@Suppress("LeakingThis")
-abstract class GraphfityPluginExtension {
-    abstract val nodeTypesPath: Property<String>
-    abstract val dotPath: Property<String>
-    abstract val projectRootPath: Property<String>
-
-    init {
-        dotPath.convention(DEFAULT_DOT_CHILD_PATH)
-        projectRootPath.convention(DEFAULT_PROJECT_ROOT)
-        nodeTypesPath.convention(DEFAULT_NODE_TYPES_PATH)
-    }
-
-    companion object {
-        private const val DEFAULT_DOT_CHILD_PATH = "gradle/dependency-graph/"
-        private const val DEFAULT_PROJECT_ROOT = ":app"
-        private const val DEFAULT_NODE_TYPES_PATH = "src/main/resources"
-    }
-}
+//TODO remove the dot file which is useless
+//TODO review configuration fields
+//TODO review nodeType config
+//TODO review node visualization
+//TODO review apply name class implementation
+//TODO review naming in the graph
+//TODO split the plugin in tasks
 
 class GraphfityPlugin : Plugin<Project> {
-    private val dotCommand = listOf("dot", "-Tpng", "-O", DOT_FILE)
-
     override fun apply(project: Project) {
         val extension = project.extensions.create("graphfityExtension", GraphfityPluginExtension::class.java)
 
@@ -38,8 +25,8 @@ class GraphfityPlugin : Plugin<Project> {
             it.doLast {
                 val nodeTypesPath = extension.nodeTypesPath.get()
                 val nodeTypes = loadNodeTypes(nodeTypesPath)
-                val dotPath = extension.dotPath.get()
-                val projectRootPath = extension.projectRootPath.get()
+                val dotPath = extension.graphImagePath.get()
+                val projectRootPath = extension.projectRootName.get()
                 val rootProject = project.findProject(projectRootPath)
                     ?: throw kotlin.IllegalArgumentException("The property provided as projectRootPath: $projectRootPath does not correspond to any project")
                 val nodes = HashSet<NodeData>()
@@ -77,6 +64,7 @@ class GraphfityPlugin : Plugin<Project> {
     }
 
     private fun generateGraph(dotFile: File) {
+        val dotCommand = listOf("dot", "-Tpng", "-O", DOT_FILE)
         ProcessBuilder(dotCommand)
             .directory(dotFile.parentFile)
             .redirectOutput(ProcessBuilder.Redirect.PIPE)
@@ -89,6 +77,7 @@ class GraphfityPlugin : Plugin<Project> {
                 } else {
                     println("Project module dependency graph created at ${dotFile.parentFile.absolutePath}.png")
                 }
+                dotFile.delete()
             }
     }
 
@@ -158,8 +147,6 @@ class GraphfityPlugin : Plugin<Project> {
         dotFile: File,
         dependencies: HashSet<Pair<NodeData, NodeData>>
     ) {
-        dotFile.appendText("\n  # Dependencies\n\n")
-
         dependencies.forEach { dependency ->
             if (dependency.first.nodeType.isEnabled && dependency.second.nodeType.isEnabled) {
                 dotFile.appendText("  \"${dependency.first.path}\" -> \"${dependency.second.path}\"\n")
