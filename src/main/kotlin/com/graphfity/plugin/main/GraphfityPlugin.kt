@@ -9,7 +9,6 @@ import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.provider.Property
 import java.io.File
 
-//TODO remove the dot file which is useless
 //TODO review configuration fields
 //TODO review nodeType config
 //TODO review node visualization
@@ -110,9 +109,9 @@ class GraphfityPlugin : Plugin<Project> {
     }
 
     private fun createDotFile(project: Project, dotPath: String): File =
-        File(project.rootDir, dotPath + DOT_FILE).apply {
-            parentFile.mkdirs()
+        File(dotPath + DOT_FILE).apply {
             delete()
+            parentFile.mkdirs()
             appendText(
                 "digraph {\n" +
                         "  graph [label=\"${project.name}\",labelloc=t,fontsize=30,ranksep=1.2];\n" +
