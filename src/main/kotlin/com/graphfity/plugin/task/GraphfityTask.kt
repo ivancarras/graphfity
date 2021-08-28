@@ -31,7 +31,7 @@ abstract class GraphfityTask : DefaultTask() {
         val rootProject = getRootProject(projectRootName)
         val nodes = HashSet<NodeData>()
         val dependencies = HashSet<Pair<NodeData, NodeData>>()
-        val dotFile = createDotFile(project, dotPath)
+        val dotFile = createDotFile(dotPath)
 
         obtainDependenciesData(rootProject, nodes, dependencies, nodeTypes)
         addNodesToFile(dotFile, nodes)
@@ -112,16 +112,15 @@ abstract class GraphfityTask : DefaultTask() {
         }
     }
 
-    private fun createDotFile(project: Project, dotPath: String): File =
-        File(dotPath + DOT_FILE).apply {
-            delete()
-            parentFile.mkdirs()
-            appendText(
-                "digraph {\n" +
-                        "  graph [ranksep=1.2];\n" +
-                        "  rankdir=TB; splines=true;\n"
-            )
-        }
+    private fun createDotFile(dotPath: String): File = File(dotPath + DOT_FILE).apply {
+        delete()
+        parentFile.mkdirs()
+        appendText(
+            "digraph {\n" +
+                    "  graph [ranksep=1.2];\n" +
+                    "  rankdir=TB; splines=true;\n"
+        )
+    }
 
     private fun addNodeToFile(dotFile: File, nodeData: NodeData) {
         if (nodeData.nodeType.isEnabled) {
