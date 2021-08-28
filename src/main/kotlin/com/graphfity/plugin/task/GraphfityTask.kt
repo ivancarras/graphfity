@@ -118,15 +118,14 @@ abstract class GraphfityTask : DefaultTask() {
             parentFile.mkdirs()
             appendText(
                 "digraph {\n" +
-                        "  graph [label=\"${project.name}\",labelloc=t,fontsize=30,ranksep=1.2];\n" +
-                        "node [style=filled, fillcolor=\"#bbbbbb\"];" +
+                        "  graph [ranksep=1.2];\n" +
                         "  rankdir=TB; splines=true;\n"
             )
         }
 
     private fun addNodeToFile(dotFile: File, nodeData: NodeData) {
         if (nodeData.nodeType.isEnabled) {
-            dotFile.appendText("node [shape = ${nodeData.nodeType.shape} fillcolor=\"${nodeData.nodeType.fillColor}\"];\n")
+            dotFile.appendText("node [style=filled, shape = ${nodeData.nodeType.shape} fillcolor=\"${nodeData.nodeType.fillColor}\"];\n")
             dotFile.appendText("\"${nodeData.path}\"\n")
         }
     }
