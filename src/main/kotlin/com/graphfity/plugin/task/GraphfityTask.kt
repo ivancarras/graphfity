@@ -31,11 +31,13 @@ abstract class GraphfityTask : DefaultTask() {
         val rootProject = getRootProject(projectRootName)
         val nodes = HashSet<NodeData>()
         val dependencies = HashSet<Pair<NodeData, NodeData>>()
+        val nodesLevel = HashMap<String, Int>()
         val dotFile = createDotFile(dotPath)
 
-        obtainDependenciesData(rootProject, nodes, dependencies, nodeTypes)
+        obtainDependenciesData(rootProject, nodes, dependencies, nodeTypes, nodesLevel)
         addNodesToFile(dotFile, nodes)
         addDependenciesToFile(dotFile, dependencies)
+        addNodeLevelsToFile(dotFile, nodesLevel)
         generateGraph(dotFile)
     }
 
@@ -75,12 +77,12 @@ abstract class GraphfityTask : DefaultTask() {
             .start()
             .run {
                 waitFor()
+                dotFile.delete()
                 if (exitValue() != 0) {
                     throw RuntimeException(errorStream.toString())
                 } else {
                     println("Project module dependency graph created at ${dotFile.parentFile.absolutePath}.png")
                 }
-                dotFile.delete()
             }
     }
 
@@ -88,25 +90,46 @@ abstract class GraphfityTask : DefaultTask() {
         project: Project,
         projects: HashSet<NodeData>,
         dependencies: HashSet<Pair<NodeData, NodeData>>,
-        nodeTypes: List<NodeType>
+        nodeTypes: List<NodeType>,
+        nodesLevel: HashMap<String, Int>,
+        level: Int = 0
     ) {
         val projectNodeData = mapProjectToNode(project, nodeTypes)
+
+        if (projectNodeData != null && projectNodeData.nodeType.isEnabled) {
+            projects.add(projectNodeData)
+
+            val nodeLevel = nodesLevel[project.path]
+            if (nodeLevel == null || level > nodeLevel) {
+                nodesLevel[projectNodeData.path] = level
+            }
+        }
+
         project.configurations.forEach { config ->
             config.dependencies
                 .withType(ProjectDependency::class.java)
                 .map { it.dependencyProject }
+                .filterNot { project == it.project }
                 .forEach { dependencyProject ->
                     val dependencyProjectNodeData = mapProjectToNode(dependencyProject, nodeTypes)
-
                     if (dependencyProjectNodeData != null && projectNodeData != null &&
-                        dependencyProjectNodeData.nodeType.isEnabled &&
-                        dependencyProjectNodeData != projectNodeData &&
-                        projectNodeData.nodeType.isEnabled
+                        dependencyProjectNodeData.nodeType.isEnabled
                     ) {
                         projects.add(dependencyProjectNodeData)
-                        projects.add(projectNodeData)
+
+                        val nodeLevel = nodesLevel[dependencyProjectNodeData.path]
+                        if (nodeLevel == null || level > nodeLevel) {
+                            nodesLevel[dependencyProjectNodeData.path] = level + 1
+                        }
                         dependencies.add(Pair(projectNodeData, dependencyProjectNodeData))
-                        obtainDependenciesData(dependencyProject, projects, dependencies, nodeTypes)
+                        obtainDependenciesData(
+                            dependencyProject,
+                            projects,
+                            dependencies,
+                            nodeTypes,
+                            nodesLevel,
+                            level + 1
+                        )
                     }
                 }
         }
@@ -152,10 +175,20 @@ abstract class GraphfityTask : DefaultTask() {
             if (dependency.first.nodeType.isEnabled && dependency.second.nodeType.isEnabled) {
                 dotFile.appendText("  \"${dependency.first.path}\" -> \"${dependency.second.path}\"\n")
             }
-            if (dependencies.last() == dependency) {
-                dotFile.appendText("}\n")
-            }
         }
+    }
+
+    private fun addNodeLevelsToFile(
+        dotFile: File, nodeLevels: HashMap<String, Int>
+    ) {
+        nodeLevels.asSequence().groupBy({ it.value }, { it.key }).forEach {
+            dotFile.appendText("\n{ rank=same;")
+            it.value.forEach { value ->
+                dotFile.appendText(" \"$value\";")
+            }
+            dotFile.appendText("}\n")
+        }
+        dotFile.appendText("}\n")
     }
 
     companion object {
