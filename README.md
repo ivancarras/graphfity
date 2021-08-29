@@ -65,7 +65,7 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+![product-image](https://raw.githubusercontent.com/ivancarras/graphfity/feature/readme-creation/graphfity_example.png)
 
 As a software engineer, you should know as difficult is to maintain a project without a previous initial good
 architecture. The project scales, new libraries are added, new features, new dependencies between the internal modules
@@ -74,8 +74,6 @@ are included...
 The purpose of this plugin is help to visualize all the project dependencies between the internal modules, as the
 projects grows, having of this way a main screenshot of all the features, libraries, core modules, components, or
 whatever kind of module you want to analise in your project.
-
-Here you go a dummy project example in an Android multi-modular application:
 
 ### Built With
 
@@ -88,25 +86,55 @@ Here you go a dummy project example in an Android multi-modular application:
 
 ## Getting Started
 
-To get a local copy up and running follow these simple steps.
-
 ### Prerequisites
 
-* npm
+#### Graphviz (https://graphviz.org/download/)
+
+- Mac 🍏
+
   ```sh
-  npm install npm@latest -g
+  Macports:
+  sudo port install graphviz
+  
+  or 
+  
+  Howebrew:
+  brew install graphviz
   ```
 
-### Installation
+  Howebrew:
+  ```sh
+  brew install graphviz
+  ```
 
-1. Clone the repo
+- Windows 🪟
+  ```sh
+  Winget:
+  winget install graphviz
+  
+  or
+  
+  Choco: 
+  choco install graphviz
+  ```
+
+- Linux 🐧
    ```sh
-   git clone https://github.com/ivancarras/graphfity.git
-   ```
-2. Install NPM packages
-   ```sh
-   npm install
-   ```
+  Ubuntu packages:
+  sudo apt install graphviz
+  
+  or
+
+  Fedora project: 
+  sudo yum install graphviz
+  
+  or
+
+  Debian packages:
+  sudo apt install graphviz
+  ```
+
+### Configuration
 
 <!-- USAGE EXAMPLES -->
 
@@ -124,15 +152,13 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 ## Roadmap
 
 See the [open issues](https://github.com/ivancarras/graphfity/issues) for a list of proposed features (and known issues)
-.
-
 
 
 <!-- CONTRIBUTING -->
 
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any
 contributions you make are **greatly appreciated**.
 
 1. Fork the Project
@@ -153,7 +179,7 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Your Name - - email
+[![LinkedIn][linkedin-shield]][linkedin-url]
 
 Project Link: [https://github.com/ivancarras/graphfity](https://github.com/ivancarras/graphfity)
 
@@ -197,4 +223,3 @@ Project Link: [https://github.com/ivancarras/graphfity](https://github.com/ivanc
 [linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white
 
 [linkedin-url]: https://www.linkedin.com/in/iv%C3%A1n-carrasco-alonso-22a852119/
-
