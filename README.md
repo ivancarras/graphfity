@@ -1,33 +1,31 @@
 [![Plugin][plugin-shield]][plugin-url]
-[![MIT License][license-shield]][license-url]
+[![Apache License][license-shield]][license-url]
 [![Contributors][contributors-shield]][contributors-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-
-
+<br/>
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
   <a href="https://github.com/ivancarras/graphfity">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
+</p>
 
 <h1 align="center">Graphfity</h1>
 
-  <p align="center">
-    <b>Graphfity</b> creates a dependency node diagram graph about your internal modules dependencies, specially useful if you are developing a <b>multi-modular application<b></b>
-    <br />
-    <br />
-    <br />
-    <a href="https://github.com/ivanca0rras/graphfity">View Demo</a>
-    ·
-    <a href="https://github.com/ivancarras/graphfity/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/ivancarras/graphfity/issues">Request Feature</a>
-  </p>
+<p align="center">
+  <b>Graphfity</b> creates a dependency node diagram graph about your internal modules dependencies, specially useful if you are developing a <b>multi-modular application<b></b>
+  <br />
+  <br />
+  <br />
+  <a href="https://github.com/ivanca0rras/graphfity">View Demo</a>
+  ·
+  <a href="https://github.com/ivancarras/graphfity/issues">Report Bug</a>
+  ·
+  <a href="https://github.com/ivancarras/graphfity/issues">Request Feature</a>
 </p>
-
 
 
 <!-- TABLE OF CONTENTS -->
@@ -44,7 +42,7 @@
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#Installation">Installation</a></li>
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
@@ -52,7 +50,7 @@
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgements">Acknowledgements</a></li>
+    <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
 
@@ -85,116 +83,205 @@ whatever kind of module you want to analise in your project.
 
 ### Prerequisites
 
-#### Graphviz setup (https://graphviz.org/download/)
+**Graphviz setup**  full guide: https://graphviz.org/download/
 
-- Mac 🍏
+#### Mac 🍏
+
+##### Option #1
+
+   ```sh
+  sudo port install graphviz
+  ```
+
+##### Option #2
 
   ```sh
-  Macports:
-  sudo port install graphviz
-  
-  or 
-  
-  Howebrew:
   brew install graphviz
   ```
 
-- Windows 🪟
+Windows 🪟
+
+##### Option #1
+
   ```sh
-  Winget:
   winget install graphviz
-  
-  or
-  
-  Choco: 
+  ```
+
+##### Option #2
+
+  ```sh
   choco install graphviz
   ```
 
-- Linux 🐧
+Linux 🐧
+
+##### Option #1
+
    ```sh
-  Ubuntu packages:
-  sudo apt install graphviz
-  
-  or
-
-  Fedora project: 
-  sudo yum install graphviz
-  
-  or
-
-  Debian packages:
   sudo apt install graphviz
   ```
 
-### Configuration
+##### Option #2
 
-#### Plugin addition
+  ```
+  sudo yum install graphviz
+  ```
 
-- Groovy DSL
+##### Option #3
 
-  root build.gradle
+  ```
+  sudo apt install graphviz
+  ```
 
-    ```
+## Installation
+
+**Groovy DSL**
+
+root build.gradle
+
+```groovy
     plugins {
     id "com.github.ivancarras.graphfity" version "1.0.0"
-    }
-  ```
+}
 
-  root build.gradle
-
-    ```
-    buildscript {
+buildscript {
     repositories {
-      maven {
-        url "https://plugins.gradle.org/m2/"
-      }
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
-      classpath com.github.ivancarras.graphfity.graphfity-plugin:'1.0.0'
-      }
+        classpath "com.github.ivancarras:graphfity-plugin:1.0.0"
     }
-  
-    apply plugin: com.github.ivancarras.graphfity.plugin.main.GraphfityPlugin
-    ```
+}
 
-- Kotlin DSL
+apply plugin: com.github.ivancarras.graphfity.plugin.main.GraphfityPlugin
+```
 
-  root build.gradle.kts
+**Kotlin DSL**
 
-    ```
-    plugins {
-      id("com.github.ivancarras.graphfity") version "1.0.0"
-    }
-    ```
-  root build.gradle.kts
-    ```
-    buildscript {
-      repositories {
+root build.gradle.kts
+
+  ```kotlin
+  plugins {
+    id("com.github.ivancarras.graphfity") version "1.0.0"
+}
+buildscript {
+    repositories {
         maven {
-          url = uri("https://plugins.gradle.org/m2/")
+            url = uri("https://plugins.gradle.org/m2/")
         }
-      }
-      dependencies {
-         classpath ('com.github.ivancarras.graphfity.GraphfityPlugin:'1.0.0')
-      }
     }
-    
-    apply(plugin = "com.github.ivancarras.graphfity.plugin.main.GraphfityPlugin")
-    ```
+    dependencies {
+        classpath('com.github.ivancarras:graphfity-plugin:1.0.0')
+    }
+}
 
-#### Plugin configuration
+apply(plugin = "com.github.ivancarras.graphfity.plugin.main.GraphfityPlugin")
+  ```
 
-Default values json file Graphviz figures guide
+### Plugin configuration
 
-<!-- USAGE EXAMPLES -->
+The plugin admits 3 configuration properties:
+
+- **nodeTypesPath** (mandatory): this is the path for your json node types configuration file (explanation below)
+- **projectRootName** (optional): start point from the task draws the dependencies, the default value is the ":app"
+  module
+- **graphImagePath** (optional): path where your graph image will be placed
+
+#### NodeTypes.json
+
+This is the file used to establish the different nodeTypes of your project a perfect example could be a project divided
+into:
+
+- Features
+- App
+- Components
+- Libraries
+- Core
+
+nodeTypes.json
+
+``` json 
+[
+  {
+    "name": "App",
+    "regex": "^:app$",
+    "isEnabled": true,
+    "shape": "box3d",
+    "fillColor": "#BAFFC9"
+  },
+  {
+    "name": "Feature",
+    "regex": "^.*feature.*$",
+    "isEnabled": true,
+    "shape": "tab",
+    "fillColor": "#E6F98A"
+  },
+  {
+    "name": "Component",
+    "regex": "^.*component.*$",
+    "isEnabled": true ,
+    "shape": "component",
+    "fillColor": "#8AD8F9"
+  },
+  {
+    "name": "Libraries",
+    "regex": "^.*libraries.*$",
+    "isEnabled": true,
+    "shape": "cylinder",
+    "fillColor": "#FFACFA"
+  },
+  {
+    "name": "Core",
+    "regex": "^.*core.*$",
+    "isEnabled": true,
+    "shape": "hexagon",
+    "fillColor": "#D5625A"
+  }
+]
+
+```
+
+Copy this initial configuration file in an accessible path in your project. (the root path is perfect)
+
+Now is time to configure the plugin:
+
+Groovy DSL
+
+``` groovy
+graphfityExtension {
+  nodeTypesPath = "<nodesTypes.json>" //(mandatory) Examples: graphfityConfig/nodesTypes.json establish the route to your nodeTypes.json
+  projectRootName = "<projectNameToAnalise>" //(optional) Examples: ":app", ":feature:wishlist"... is up to you
+  graphImagePath = "<graphsFolder>" //(optional)the folder where will be placed your graph.png image
+}
+```
+
+Kotlin DSL
+
+``` kotlin
+configure<GraphfityPluginExtension> {
+  nodeTypesPath.set("<nodesTypes.json>") //(mandatory) Examples: graphfityConfig/nodesTypes.json establish the route to your nodeTypes.json
+  projectRootName.set("<projectNameToAnalise>") //(optional) Examples: ":app", ":feature:wishlist"... is up to you
+  graphImagePath.set("<graphsFolder>") //(optional)the folder where will be placed your graph.png image
+}
+```
 
 ## Usage
 
+When your configuration is done now you can execute:
 
+Mac 🍏 & Linux 🐧
 
+```shell
+./gradlew graphfity
+```
 
-
-<!-- ROADMAP -->
+Windows 🪟 
+```shell
+./gradlew graphfity
+```
+The graph is going to be generated in the respective graphImagePath defined in the configuration
 
 ## Roadmap
 
@@ -218,8 +305,7 @@ contributions you make are **greatly appreciated**.
 
 ## License
 
-Distributed under the MIT License. See `LICENSE` for more information.
-
+Distributed under the Apache License. See `LICENSE` for more information.
 
 
 <!-- CONTACT -->
