@@ -1,3 +1,6 @@
+group = "com.github.ivancarras"
+version = "1.0.0"
+
 plugins {
     id("java")
     id("java-gradle-plugin")
@@ -13,11 +16,8 @@ repositories {
 pluginBundle {
     website = "https://github.com/ivancarras/graphfity"
     vcsUrl = "https://github.com/ivancarras/graphfity.git"
-    tags = listOf("kotlin-DSL", "graph", "graphviz", "plugin", "multi-modular", "android")
+    tags = listOf("kotlin-DSL", "graph", "graphviz", "plugin", "multi-modular", "android", "architecture")
 }
-
-group = "com.github.ivancarras"
-version = "1.0.0"
 
 gradlePlugin {
     plugins {
