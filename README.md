@@ -16,7 +16,7 @@
 <h1 align="center">Graphfity</h1>
 
 <p align="center">
-  <b>Graphfity</b> creates a dependency node diagram graph about your internal modules dependencies, specially useful if you are developing a <b>multi-modular application<b></b>
+  <b>Graphfity</b> creates a dependency node diagram graph about your internal modules dependencies, specially useful if you are developing a <b>multi-modular application</b>
   <br />
   <br />
   <br />
@@ -62,6 +62,8 @@
 
 ![product-image](https://raw.githubusercontent.com/ivancarras/graphfity/feature/readme-creation/graphfity_example.png)
 
+<br/><br/> 
+
 As a software engineer, you should know as difficult is to maintain a project without a previous initial good
 architecture. The project scales, new libraries are added, new features, new dependencies between the internal modules
 are included...
@@ -87,47 +89,47 @@ whatever kind of module you want to analise in your project.
 
 #### Mac 🍏
 
-##### Option #1
+###### Option #1
 
    ```sh
   sudo port install graphviz
   ```
 
-##### Option #2
+###### Option #2
 
   ```sh
   brew install graphviz
   ```
 
-Windows 🪟
+#### Windows 🪟
 
-##### Option #1
+###### Option #1
 
   ```sh
   winget install graphviz
   ```
 
-##### Option #2
+###### Option #2
 
   ```sh
   choco install graphviz
   ```
 
-Linux 🐧
+#### Linux 🐧
 
-##### Option #1
+###### Option #1
 
    ```sh
   sudo apt install graphviz
   ```
 
-##### Option #2
+###### Option #2
 
   ```
   sudo yum install graphviz
   ```
 
-##### Option #3
+###### Option #3
 
   ```
   sudo apt install graphviz
@@ -140,7 +142,7 @@ Linux 🐧
 root build.gradle
 
 ```groovy
-    plugins {
+plugins {
     id "com.github.ivancarras.graphfity" version "1.0.0"
 }
 
@@ -163,7 +165,7 @@ apply plugin: com.github.ivancarras.graphfity.plugin.main.GraphfityPlugin
 root build.gradle.kts
 
   ```kotlin
-  plugins {
+plugins {
     id("com.github.ivancarras.graphfity") version "1.0.0"
 }
 buildscript {
