@@ -1,7 +1,7 @@
-package com.graphfity.plugin.task
+package com.github.ivancarras.graphfity.plugin.task
 
-import com.graphfity.plugin.model.NodeData
-import com.graphfity.plugin.model.NodeType
+import com.github.ivancarras.graphfity.plugin.model.NodeData
+import com.github.ivancarras.graphfity.plugin.model.NodeType
 import groovy.json.JsonSlurper
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project

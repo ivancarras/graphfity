@@ -1,1 +1,1 @@
-rootProject.name = "GraphfityPlugin"
+rootProject.name = "graphfity-plugin"

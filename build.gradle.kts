@@ -16,16 +16,17 @@ pluginBundle {
     tags = listOf("kotlin-DSL", "graph", "graphviz", "plugin", "multi-modular", "android")
 }
 
-group = "com.graphfity"
-version = "1.0"
+group = "com.github.ivancarras"
+version = "1.0.0"
 
 gradlePlugin {
     plugins {
-        create("graphfityPlugin") {
-            id = "com.graphfity"
+        create("GraphfityPlugin") {
+            id = "com.github.ivancarras.graphfity"
             displayName = "Graphfity Plugin"
-            description = "This plugin draws your multi-modular application dependency graph"
-            implementationClass = "com.graphfity.plugin.main.GraphfityPlugin"
+            description =
+                "Graphfity creates a dependency node graph about your internal modules dependencies, helping you to analise and optimize the internal dependencies between your project modules, generating a png image about your project which is specially useful if you are developing a multi-modular application"
+            implementationClass = "com.github.ivancarras.graphfity.plugin.main.GraphfityPlugin"
         }
     }
 }

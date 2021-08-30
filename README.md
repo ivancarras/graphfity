@@ -4,8 +4,6 @@
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-
 
 
 <!-- PROJECT LOGO -->
@@ -18,12 +16,11 @@
 <h1 align="center">Graphfity</h1>
 
   <p align="center">
-    <b>Graphfity</b> creates a dependency graph about your project modules internal dependencies, specially useful if you are developing a <b>multi-modular application<b></b>
-    <br />
-    <a href="https://github.com/ivancarras/graphfity"><strong>Explore the docs »</strong></a>
+    <b>Graphfity</b> creates a dependency node diagram graph about your internal modules dependencies, specially useful if you are developing a <b>multi-modular application<b></b>
     <br />
     <br />
-    <a href="https://github.com/ivancarras/graphfity">View Demo</a>
+    <br />
+    <a href="https://github.com/ivanca0rras/graphfity">View Demo</a>
     ·
     <a href="https://github.com/ivancarras/graphfity/issues">Report Bug</a>
     ·
@@ -88,7 +85,7 @@ whatever kind of module you want to analise in your project.
 
 ### Prerequisites
 
-#### Graphviz (https://graphviz.org/download/)
+#### Graphviz setup (https://graphviz.org/download/)
 
 - Mac 🍏
 
@@ -99,11 +96,6 @@ whatever kind of module you want to analise in your project.
   or 
   
   Howebrew:
-  brew install graphviz
-  ```
-
-  Howebrew:
-  ```sh
   brew install graphviz
   ```
 
@@ -136,14 +128,69 @@ whatever kind of module you want to analise in your project.
 
 ### Configuration
 
+#### Plugin addition
+
+- Groovy DSL
+
+  root build.gradle
+
+    ```
+    plugins {
+    id "com.github.ivancarras.graphfity" version "1.0.0"
+    }
+  ```
+
+  root build.gradle
+
+    ```
+    buildscript {
+    repositories {
+      maven {
+        url "https://plugins.gradle.org/m2/"
+      }
+    }
+    dependencies {
+      classpath com.github.ivancarras.graphfity.graphfity-plugin:'1.0.0'
+      }
+    }
+  
+    apply plugin: com.github.ivancarras.graphfity.plugin.main.GraphfityPlugin
+    ```
+
+- Kotlin DSL
+
+  root build.gradle.kts
+
+    ```
+    plugins {
+      id("com.github.ivancarras.graphfity") version "1.0.0"
+    }
+    ```
+  root build.gradle.kts
+    ```
+    buildscript {
+      repositories {
+        maven {
+          url = uri("https://plugins.gradle.org/m2/")
+        }
+      }
+      dependencies {
+         classpath ('com.github.ivancarras.graphfity.GraphfityPlugin:'1.0.0')
+      }
+    }
+    
+    apply(plugin = "com.github.ivancarras.graphfity.plugin.main.GraphfityPlugin")
+    ```
+
+#### Plugin configuration
+
+Default values json file Graphviz figures guide
+
 <!-- USAGE EXAMPLES -->
 
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos
-work well in this space. You may also link to more resources.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
 
 
 
@@ -181,22 +228,13 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
-Project Link: [https://github.com/ivancarras/graphfity](https://github.com/ivancarras/graphfity)
+ivan.carrasco.dev@gmail.com
 
-
-
-<!-- ACKNOWLEDGEMENTS -->
-
-## Acknowledgements
-
-* []()
-* []()
-* []()
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[plugin-url]: https://plugins.gradle.org/plugin/com.graphfity
+[plugin-url]: https://plugins.gradle.org/plugin/com.github.ivancarras.graphfity
 
 [plugin-shield]:https://img.shields.io/maven-metadata/v?label=Plugin&metadataUrl=https%3A//plugins.gradle.org/m2/com/graphfity/com.graphfity.gradle.plugin/maven-metadata.xml
 

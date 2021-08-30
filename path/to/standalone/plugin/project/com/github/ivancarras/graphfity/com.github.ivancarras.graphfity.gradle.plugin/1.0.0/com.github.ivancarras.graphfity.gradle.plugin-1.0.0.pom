@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.github.ivancarras.graphfity</groupId>
+  <artifactId>com.github.ivancarras.graphfity.gradle.plugin</artifactId>
+  <version>1.0.0</version>
+  <packaging>pom</packaging>
+  <name>Graphfity Plugin</name>
+  <description>Graphfity creates a dependency node graph about your internal modules dependencies, helping you to analise and optimize the internal dependencies between your project modules, generating a png image about your project which is specially useful if you are developing a multi-modular application</description>
+  <dependencies>
+    <dependency>
+      <groupId>com.github.ivancarras</groupId>
+      <artifactId>graphfity-plugin</artifactId>
+      <version>1.0.0</version>
+    </dependency>
+  </dependencies>
+</project>
