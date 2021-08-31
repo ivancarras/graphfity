@@ -1,9 +1,4 @@
-[![Plugin][plugin-shield]][plugin-url]
-[![Apache License][license-shield]][license-url]
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
+
 <br/>
 <!-- PROJECT LOGO -->
 <br />
@@ -16,8 +11,7 @@
 <h1 align="center">Graphfity</h1>
 
 <p align="center">
-  <b>Graphfity</b> creates a dependency node diagram graph about your internal modules dependencies, specially useful if you are developing a <b>multi-modular application<b></b>
-  <br />
+  <b>Graphfity</b> creates a dependency node diagram graph about your internal modules dependencies, specially useful if you are developing a <b>multi-modular application</b>
   <br />
   <br />
   <a href="https://github.com/ivanca0rras/graphfity">View Demo</a>
@@ -26,7 +20,27 @@
   ·
   <a href="https://github.com/ivancarras/graphfity/issues">Request Feature</a>
 </p>
-
+<br/>
+<p align="center">
+  <a href="https://plugins.gradle.org/plugin/com.github.ivancarras.graphfity">
+    <img src="https://img.shields.io/maven-metadata/v?label=Plugin&metadataUrl=https%3A//plugins.gradle.org/m2/com/graphfity/com.graphfity.gradle.plugin/maven-metadata.xml"/>
+  </a>
+  <a href=" https://github.com/ivancarras/graphfity/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/ivancarras/graphfity.svg"/>
+  </a>
+  <a href="https://github.com/ivancarras/graphfity/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors/ivancarras/graphfity.svg"/>
+  </a>
+  <a href="https://github.com/ivancarras/graphfity/network/members">
+    <img src="https://img.shields.io/github/forks/ivancarras/graphfity.svg"/>
+  </a>
+  <a href="https://github.com/ivancarras/graphfity/issues">
+    <img src="https://img.shields.io/github/issues/ivancarras/graphfity.svg"/>
+  </a>
+  <a href="https://github.com/ivancarras/graphfity/stargazers">
+    <img src="https://img.shields.io/github/stars/ivancarras/graphfity.svg"/>
+  </a>
+</p>
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">
@@ -87,47 +101,47 @@ whatever kind of module you want to analise in your project.
 
 #### Mac 🍏
 
-##### Option #1
+###### Option #1
 
    ```sh
   sudo port install graphviz
   ```
 
-##### Option #2
+###### Option #2
 
   ```sh
   brew install graphviz
   ```
 
-Windows 🪟
+#### Windows 🪟
 
-##### Option #1
+###### Option #1
 
   ```sh
   winget install graphviz
   ```
 
-##### Option #2
+###### Option #2
 
   ```sh
   choco install graphviz
   ```
 
-Linux 🐧
+#### Linux 🐧
 
-##### Option #1
+###### Option #1
 
    ```sh
   sudo apt install graphviz
   ```
 
-##### Option #2
+###### Option #2
 
   ```
   sudo yum install graphviz
   ```
 
-##### Option #3
+###### Option #3
 
   ```
   sudo apt install graphviz
@@ -137,7 +151,7 @@ Linux 🐧
 
 **Groovy DSL**
 
-root build.gradle
+*root build.gradle*
 
 ```groovy
     plugins {
@@ -160,7 +174,7 @@ apply plugin: com.github.ivancarras.graphfity.plugin.main.GraphfityPlugin
 
 **Kotlin DSL**
 
-root build.gradle.kts
+*root build.gradle.kts*
 
   ```kotlin
   plugins {
@@ -194,20 +208,19 @@ The plugin admits 3 configuration properties:
 This is the file used to establish the different nodeTypes of your project a perfect example could be a project divided
 into:
 
-- Features
 - App
+- Features
 - Components
 - Libraries
 - Core
 
-nodeTypes.json
-
+*nodeTypes.json*
 ``` json 
 [
   {
     "name": "App",
-    "regex": "^:app$",
-    "isEnabled": true,
+    "regex": "^:app$", 
+    "isEnabled": true, 
     "shape": "box3d",
     "fillColor": "#BAFFC9"
   },
@@ -242,6 +255,16 @@ nodeTypes.json
 ]
 
 ```
+*Node explanation*
+```
+{
+"name": "App", //Node name
+"regex": "^:app$", //This regex corresponds to the modules which will be draw as this node type
+"isEnabled": true, //Enable o disable the visualization of this node
+"shape": "box3d", // Graphviz node shape you can choose another one using: https://graphviz.org/doc/info/shapes.html
+"fillColor": "#BAFFC9"//Hexadecimal color for these nodes
+}
+```
 
 Copy this initial configuration file in an accessible path in your project. (the root path is perfect)
 
@@ -271,17 +294,19 @@ configure<GraphfityPluginExtension> {
 
 When your configuration is done now you can execute:
 
-Mac 🍏 & Linux 🐧
+#### Mac 🍏 & Linux 🐧
 
 ```shell
 ./gradlew graphfity
 ```
 
-Windows 🪟 
+#### Windows 🪟
+
 ```shell
-./gradlew graphfity
+gradle graphfity
 ```
-The graph is going to be generated in the respective graphImagePath defined in the configuration
+
+The graph is going to be generated in the respective **graphImagePath** defined in the configuration
 
 ## Roadmap
 
@@ -319,30 +344,6 @@ ivan.carrasco.dev@gmail.com
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-
-[plugin-url]: https://plugins.gradle.org/plugin/com.github.ivancarras.graphfity
-
-[plugin-shield]:https://img.shields.io/maven-metadata/v?label=Plugin&metadataUrl=https%3A//plugins.gradle.org/m2/com/graphfity/com.graphfity.gradle.plugin/maven-metadata.xml
-
-[issues-shield]: https://img.shields.io/github/issues/ivancarras/graphfity.svg
-
-[issues-url]: https://github.com/ivancarras/graphfity/issues
-
-[license-shield]: https://img.shields.io/github/license/ivancarras/graphfity.svg
-
-[license-url]: https://github.com/ivancarras/graphfity/blob/main/LICENSE
-
-[contributors-shield]: https://img.shields.io/github/contributors/ivancarras/graphfity.svg
-
-[contributors-url]: https://github.com/ivancarras/graphfity/graphs/contributors
-
-[forks-shield]: https://img.shields.io/github/forks/ivancarras/graphfity.svg
-
-[forks-url]: https://github.com/ivancarras/graphfity/network/members
-
-[stars-shield]: https://img.shields.io/github/stars/ivancarras/graphfity.svg
-
-[stars-url]: https://github.com/ivancarras/graphfity/stargazers
 
 [linkedin-shield]: https://img.shields.io/badge/LinkedIn-0077B5?logo=linkedin&logoColor=white
 
