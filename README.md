@@ -1,17 +1,12 @@
-
 <br/>
-<!-- PROJECT LOGO -->
-<br />
 <p align="center">
   <a href="https://github.com/ivancarras/graphfity">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="https://drive.google.com/uc?export=view&id=1srnzHI4ZN44rBJcub2X25vEG08cgi3uS" height=300 >
   </a>
 </p>
 
-<h1 align="center">Graphfity</h1>
-
 <p align="center">
-  <b>Graphfity</b> creates a dependency node diagram graph about your internal modules dependencies, specially useful if you are developing a <b>multi-modular application</b>
+  <b>Graphfity</b> creates a dependency nodes diagram graph about your internal modules dependencies, specially useful if you are developing a <b>multi-module application</b>
   <br />
   <br />
   <a href="https://github.com/ivanca0rras/graphfity">View Demo</a>
@@ -41,6 +36,9 @@
     <img src="https://img.shields.io/github/stars/ivancarras/graphfity.svg"/>
   </a>
 </p>
+
+<br/>
+
 
 <!-- TABLE OF CONTENTS -->
 <details open="open">
@@ -74,7 +72,7 @@
 
 ## About The Project
 
-![product-image](https://raw.githubusercontent.com/ivancarras/graphfity/feature/readme-creation/graphfity_example.png)
+![product-image](https://drive.google.com/uc?export=view&id=1-qwMKkNLfhwE2peINrXBwhqC3graNtYu)
 
 As a software engineer, you should know as difficult is to maintain a project without a previous initial good
 architecture. The project scales, new libraries are added, new features, new dependencies between the internal modules
@@ -147,7 +145,7 @@ whatever kind of module you want to analise in your project.
   sudo apt install graphviz
   ```
 
-## Installation
+### Installation
 
 **Groovy DSL**
 
@@ -214,7 +212,12 @@ into:
 - Libraries
 - Core
 
+<p>
+    <img src="https://drive.google.com/uc?export=view&id=1L6Kik0pLXpzsJC3YsvHoPTk_oWeyqbpC" height="70%" width="70%">
+</p>
+
 *nodeTypes.json*
+
 ``` json 
 [
   {
@@ -255,7 +258,9 @@ into:
 ]
 
 ```
-*Node explanation*
+
+**Node explanation**
+
 ```
 {
 "name": "App", //Node name
@@ -270,7 +275,7 @@ Copy this initial configuration file in an accessible path in your project. (the
 
 Now is time to configure the plugin:
 
-Groovy DSL
+**Groovy DSL**
 
 ``` groovy
 graphfityExtension {
@@ -280,7 +285,7 @@ graphfityExtension {
 }
 ```
 
-Kotlin DSL
+**Kotlin DSL**
 
 ``` kotlin
 configure<GraphfityPluginExtension> {
