@@ -81,7 +81,7 @@ abstract class GraphfityTask : DefaultTask() {
                 if (exitValue() != 0) {
                     throw RuntimeException(errorStream.toString())
                 } else {
-                    println("Project module dependency graph created at ${dotFile.parentFile.absolutePath}.png")
+                    println("Project module dependency graph created at ${dotFile.path}.png")
                 }
             }
     }
