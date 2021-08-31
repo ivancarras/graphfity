@@ -25,7 +25,7 @@ gradlePlugin {
             id = "com.github.ivancarras.graphfity"
             displayName = "Graphfity Plugin"
             description =
-                "Graphfity creates a dependency node graph about your internal modules dependencies, helping you to analise and optimize the internal dependencies between your project modules, generating a png image about your project which is specially useful if you are developing a multi-modular application"
+                "Graphfity creates a dependency node graph about your internal modules dependencies, helping you to analise and optimize the internal dependencies between your project modules, generating a png image about your project which is specially useful if you are developing a multi-module application"
             implementationClass = "com.github.ivancarras.graphfity.plugin.main.GraphfityPlugin"
         }
     }
