@@ -27,4 +27,4 @@ gradle-app.setting
 
 # Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
 gradle-wrapper.jar
-path/to/standalone/plugin/project/com/graphfity/
+path/to/standalone/plugin/project/
