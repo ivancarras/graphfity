@@ -153,7 +153,7 @@ whatever kind of module you want to analise in your project.
 *root build.gradle*
 
 ```groovy
-    plugins {
+plugins {
     id "com.github.ivancarras.graphfity" version "1.0.0"
 }
 
@@ -176,7 +176,7 @@ apply plugin: com.github.ivancarras.graphfity.plugin.main.GraphfityPlugin
 *root build.gradle.kts*
 
   ```kotlin
-  plugins {
+plugins {
     id("com.github.ivancarras.graphfity") version "1.0.0"
 }
 buildscript {
