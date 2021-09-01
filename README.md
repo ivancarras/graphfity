@@ -2,7 +2,7 @@
 <br/>
 <p align="center">
   <a href="https://github.com/ivancarras/graphfity">
-    <img src="https://user-images.githubusercontent.com/23535893/131651895-b9c82af7-7ad3-4922-a7f9-c82fbbaa4c52.png" height=300 >
+    <img src="https://user-images.githubusercontent.com/23535893/131651895-b9c82af7-7ad3-4922-a7f9-c82fbbaa4c52.png" height="%40" width="40%" >
   </a>
 </p>
 
