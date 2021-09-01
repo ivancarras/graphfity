@@ -9,7 +9,7 @@
   <b>Graphfity</b> creates a dependency nodes diagram graph about your internal modules dependencies, specially useful if you are developing a <b>multi-module application</b>
   <br />
   <br />
-  <a href="https://github.com/ivanca0rras/graphfity">View Demo</a>
+  <a href="https://camo.githubusercontent.com/ccc47017152f0c4505623e9ddceedb1a95f5e8c8975344ecbc2d59915b8b6cd7/68747470733a2f2f64726976652e676f6f676c652e636f6d2f75633f6578706f72743d766965772669643d312d71774d4b6b4e4c66687745327065494e72584277687143336772614e745975">View Demo</a>
   ·
   <a href="https://github.com/ivancarras/graphfity/issues">Report Bug</a>
   ·
@@ -75,9 +75,9 @@
 
 ![product-image](https://drive.google.com/uc?export=view&id=1-qwMKkNLfhwE2peINrXBwhqC3graNtYu)
 
-As a software engineer, you should know as difficult is to maintain a project without a previous initial good
-architecture. The project scales, new libraries are added, new features, new dependencies between the internal modules
-are included...
+As a software engineer, you should know how difficult is to maintain a project without a previous initial good
+architecture. The project scales, new libraries, new features, new dependencies between the internal modules
+are added...
 
 The purpose of this plugin is help to visualize all the project dependencies between the internal modules, as the
 projects grows, having of this way a main screenshot of all the features, libraries, core modules, components, or
@@ -272,7 +272,7 @@ into:
 }
 ```
 
-Copy this initial configuration file in an accessible path in your project. (the root path is perfect)
+**Copy this initial configuration file in an accessible path in your project. (the root path is perfect)**
 
 Now is time to configure the plugin:
 
