@@ -19,7 +19,7 @@
 <br/>
 <p align="center">
   <a href="https://plugins.gradle.org/plugin/com.github.ivancarras.graphfity">
-    <img src="https://img.shields.io/maven-metadata/v?label=Plugin&metadataUrl=https%3A//plugins.gradle.org/m2/com/graphfity/com.graphfity.gradle.plugin/maven-metadata.xml"/>
+    <img src="https://img.shields.io/maven-metadata/v?label=Plugin&metadataUrl=https://plugins.gradle.org/m2/com/github/ivancarras/graphfity/com.github.ivancarras.graphfity.gradle.plugin/maven-metadata.xml"/>
   </a>
   <a href=" https://github.com/ivancarras/graphfity/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/ivancarras/graphfity.svg"/>
