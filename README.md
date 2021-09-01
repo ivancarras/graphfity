@@ -1,7 +1,8 @@
+
 <br/>
 <p align="center">
   <a href="https://github.com/ivancarras/graphfity">
-    <img src="https://drive.google.com/uc?export=view&id=1srnzHI4ZN44rBJcub2X25vEG08cgi3uS" height=300 >
+    <img src="https://user-images.githubusercontent.com/23535893/131651895-b9c82af7-7ad3-4922-a7f9-c82fbbaa4c52.png" height=300 >
   </a>
 </p>
 
@@ -73,7 +74,7 @@
 
 ## About The Project
 
-![product-image](https://drive.google.com/uc?export=view&id=1-qwMKkNLfhwE2peINrXBwhqC3graNtYu)
+![product-image](https://user-images.githubusercontent.com/23535893/131650974-228a131e-81b1-40cd-b2f9-fe6d41777d23.png)
 
 As a software engineer, you should know how difficult is to maintain a project without a previous initial good
 architecture. The project scales, new libraries, new features, new dependencies between the internal modules
@@ -214,7 +215,7 @@ into:
 - Core
 
 <p>
-    <img src="https://drive.google.com/uc?export=view&id=1L6Kik0pLXpzsJC3YsvHoPTk_oWeyqbpC" height="70%" width="70%">
+    <img src="https://user-images.githubusercontent.com/23535893/131650988-8865b419-22ba-4eb1-868b-f0780ed04f58.png" height="70%" width="70%">
 </p>
 
 *nodeTypes.json*
