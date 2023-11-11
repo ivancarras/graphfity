@@ -22,7 +22,7 @@ gradlePlugin {
             displayName = "Graphfity Plugin"
             description = "Graphfity empowers you to visualize and analyze the intricate dependencies within your project's internal modules. By generating a comprehensive dependency node graph, it provides valuable insights to help you optimize the relationships between different modules. This tool proves particularly advantageous for developers working on multi-module applications, offering a clear and insightful PNG image that encapsulates the intricate interplay of your project components."
             implementationClass = "com.github.ivancarras.graphfity.plugin.main.GraphfityPlugin"
-            tags.set(listOf("kotlin-DSL", "graph", "graphviz", "plugin", "multi-module","app modularization","kotlin", "android", "architecture"))
+            tags.set(listOf("kotlin-DSL", "graph", "graphviz", "multi-module","app modularization","kotlin", "android", "architecture"))
         }
     }
 }
