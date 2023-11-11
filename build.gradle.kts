@@ -1,11 +1,11 @@
 group = "com.github.ivancarras"
-version = "1.0.0"
+version = "1.0.1"
 
 plugins {
     id("java")
     id("java-gradle-plugin")
     id("maven-publish")
-    id("org.jetbrains.kotlin.jvm") version "1.6.0"
+    kotlin("jvm") version "1.8.0"
     id("com.gradle.plugin-publish") version "0.15.0"
 }
 
@@ -32,8 +32,12 @@ gradlePlugin {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+kotlin{
+    jvmToolchain(17)
 }
 
 publishing {
@@ -45,8 +49,8 @@ publishing {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.6.0")
-    implementation("org.codehaus.groovy:groovy-all:3.0.8")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.2")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.0")
+    implementation("org.codehaus.groovy:groovy-all:3.0.16")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 }
