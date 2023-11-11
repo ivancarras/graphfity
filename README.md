@@ -112,7 +112,7 @@ whatever kind of module you want to analise in your project.
   brew install graphviz
   ```
 
-#### Windows 🪟
+#### Windows 
 
 ###### Option #1
 
@@ -153,10 +153,14 @@ whatever kind of module you want to analise in your project.
 *root build.gradle*
 
 ```groovy
+// Using the plugins DSL
 plugins {
-    id "com.github.ivancarras.graphfity" version "1.0.0"
+    id "com.github.ivancarras.graphfity" version "1.1.0"
 }
+```
 
+``` groovy
+// Using legacy plugin application
 buildscript {
     repositories {
         maven {
@@ -164,10 +168,9 @@ buildscript {
         }
     }
     dependencies {
-        classpath "com.github.ivancarras:graphfity-plugin:1.0.0"
+        classpath "com.github.ivancarras:graphfity-plugin:1.1.0"
     }
 }
-
 apply plugin: com.github.ivancarras.graphfity.plugin.main.GraphfityPlugin
 ```
 
@@ -175,22 +178,30 @@ apply plugin: com.github.ivancarras.graphfity.plugin.main.GraphfityPlugin
 
 *root build.gradle.kts*
 
-  ```kotlin
+  ``` kotlin
+// Using the plugins DSL
 plugins {
-    id("com.github.ivancarras.graphfity") version "1.0.0"
+    id("com.github.ivancarras.graphfity") version "1.1.0"
 }
+```
+
+
+
+```kotlin
+// Using legacy plugin application
 buildscript {
-    repositories {
-        maven {
-            url = uri("https://plugins.gradle.org/m2/")
-        }
+  repositories {
+    maven {
+      url = uri("https://plugins.gradle.org/m2/")
     }
-    dependencies {
-        classpath('com.github.ivancarras:graphfity-plugin:1.0.0')
-    }
+  }
+  dependencies {
+    classpath("com.github.ivancarras:graphfity-plugin:1.1.0")
+  }
 }
 
-apply(plugin = "com.github.ivancarras.graphfity.plugin.main.GraphfityPlugin")
+apply(plugin = "com.github.ivancarras.graphfity")
+
   ```
 
 ### Plugin configuration
@@ -262,13 +273,13 @@ into:
 
 **Node explanation**
 
-```
+``` json
 {
-"name": "App", //Node name
-"regex": "^:app$", //This regex corresponds to the modules which will be draw as this node type
-"isEnabled": true, //Enable o disable the visualization of this node
-"shape": "box3d", // Graphviz node shape you can choose another one using: https://graphviz.org/doc/info/shapes.html
-"fillColor": "#BAFFC9"//Hexadecimal color for these nodes
+    "name": "App", //Node name
+    "regex": "^:app$", //This regex corresponds to the modules which will be draw as this node type
+    "isEnabled": true, //Enable o disable the visualization of this node
+    "shape": "box3d", // Graphviz node shape you can choose another one using: https://graphviz.org/doc/info/shapes.html
+    "fillColor": "#BAFFC9"//Hexadecimal color for these nodes
 }
 ```
 
@@ -278,6 +289,7 @@ Now is time to configure the plugin:
 
 **Groovy DSL**
 
+*root build.gradle.kts*
 ``` groovy
 graphfityExtension {
   nodeTypesPath = "<nodesTypes.json>" //(mandatory) Examples: graphfityConfig/nodesTypes.json establish the route to your nodeTypes.json
@@ -288,6 +300,7 @@ graphfityExtension {
 
 **Kotlin DSL**
 
+*root build.gradle.kts*
 ``` kotlin
 configure<GraphfityPluginExtension> {
   nodeTypesPath.set("<nodesTypes.json>") //(mandatory) Examples: graphfityConfig/nodesTypes.json establish the route to your nodeTypes.json
