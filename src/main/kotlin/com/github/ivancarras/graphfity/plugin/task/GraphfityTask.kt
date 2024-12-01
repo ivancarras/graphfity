@@ -105,7 +105,7 @@ abstract class GraphfityTask : DefaultTask() {
         project.configurations.forEach { config ->
             config.dependencies
                 .withType(ProjectDependency::class.java)
-                .map { it.dependencyProject }
+                .map { project.project(it.path) }
                 .filterNot { project == it.project }
                 .forEach { dependencyProject ->
                     val dependencyProjectNodeData = mapProjectToNode(dependencyProject, nodeTypes)
