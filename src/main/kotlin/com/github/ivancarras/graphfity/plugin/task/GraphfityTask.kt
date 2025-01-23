@@ -34,12 +34,32 @@ abstract class GraphfityTask : DefaultTask() {
         val nodesLevel = HashMap<String, Int>()
         val dotFile = createDotFile(dotPath)
 
-        obtainNodesAndDependencies(rootProject, nodes, dependencies, nodeTypes)
-        obtainNodesLevels(projectRootName, dependencies, nodesLevel)
-        addNodesToFile(dotFile, nodes)
-        addDependenciesToFile(dotFile, dependencies)
-        addNodeLevelsToFile(dotFile, nodesLevel)
-        generateGraph(dotFile)
+        obtainNodesAndDependencies(
+            project = rootProject,
+            nodes = nodes,
+            dependencies = dependencies,
+            nodeTypes = nodeTypes
+        )
+        obtainNodesLevels(
+            rootProjectName = projectRootName,
+            dependencies = dependencies,
+            nodeLevel = nodesLevel
+        )
+        addNodesToFile(
+            dotFile = dotFile,
+            nodes = nodes
+        )
+        addDependenciesToFile(
+            dotFile = dotFile,
+            dependencies = dependencies
+        )
+        addNodeLevelsToFile(
+            dotFile = dotFile,
+            nodeLevels = nodesLevel
+        )
+        generateGraph(
+            dotFile = dotFile
+        )
     }
 
     private fun getRootProject(projectRootName: String): Project {
@@ -92,14 +112,14 @@ abstract class GraphfityTask : DefaultTask() {
 
     private fun obtainNodesAndDependencies(
         project: Project,
-        projects: HashSet<NodeData>,
+        nodes: HashSet<NodeData>,
         dependencies: HashSet<Pair<NodeData, NodeData>>,
         nodeTypes: List<NodeType>,
     ) {
         val projectNodeData = mapProjectToNode(project, nodeTypes)
 
         if (projectNodeData != null && projectNodeData.nodeType.isEnabled) {
-            projects.add(projectNodeData)
+            nodes.add(projectNodeData)
         }
 
         project.configurations.forEach { config ->
@@ -114,10 +134,10 @@ abstract class GraphfityTask : DefaultTask() {
                     ) {
                         dependencies.add(Pair(projectNodeData, dependencyProjectNodeData))
 
-                        if (dependencyProjectNodeData !in projects) {
+                        if (dependencyProjectNodeData !in nodes) {
                             obtainNodesAndDependencies(
                                 project = dependencyProject,
-                                projects = projects,
+                                nodes = nodes,
                                 dependencies = dependencies,
                                 nodeTypes = nodeTypes,
                             )
