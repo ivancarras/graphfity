@@ -211,7 +211,8 @@ abstract class GraphfityTask : DefaultTask() {
     }
 
     private fun addNodeLevelsToFile(
-        dotFile: File, nodeLevels: HashMap<String, Int>
+        dotFile: File,
+        nodeLevels: HashMap<String, Int>
     ) {
         nodeLevels.asSequence().groupBy({ it.value }, { it.key }).forEach {
             dotFile.appendText("\n{ rank=same;")
