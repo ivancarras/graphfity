@@ -5,14 +5,15 @@ plugins {
     id("java")
     id("java-gradle-plugin")
     id("maven-publish")
-    kotlin("jvm") version "1.8.0"
-    id("com.gradle.plugin-publish") version "1.2.1"
+    kotlin("jvm") version "2.1.0"
+    id("com.gradle.plugin-publish") version "1.3.0"
 }
 
 repositories {
     mavenCentral()
 }
 
+@Suppress("UnstableApiUsage")
 gradlePlugin {
     website.set("https://github.com/ivancarras/graphfity")
     vcsUrl.set("https://github.com/ivancarras/graphfity.git")
@@ -42,11 +43,4 @@ publishing {
             url = uri("path/to/standalone/plugin/project")
         }
     }
-}
-
-dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.0")
-    implementation("org.codehaus.groovy:groovy-all:3.0.16")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.2")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 }
