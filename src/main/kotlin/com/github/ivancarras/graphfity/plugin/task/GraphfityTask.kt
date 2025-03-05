@@ -184,7 +184,7 @@ abstract class GraphfityTask : DefaultTask() {
         parentFile.mkdirs()
         appendText(
             "digraph {\n" +
-                "  graph [ranksep=1.2];\n" +
+                "  graph [ranksep=1.2];\n"
         )
     }
 
@@ -214,12 +214,49 @@ abstract class GraphfityTask : DefaultTask() {
         dotFile: File,
         dependencies: HashSet<Pair<NodeData, NodeData>>
     ) {
-        dependencies.forEach { dependency ->
-            if (dependency.first.nodeType.isEnabled && dependency.second.nodeType.isEnabled) {
-                dotFile.appendText("  \"${dependency.first.path}\" -> \"${dependency.second.path}\"\n")
+        val adjacencyList = mutableMapOf<NodeData, MutableList<NodeData>>()
+
+        dependencies.forEach { (from, to) ->
+            adjacencyList.computeIfAbsent(from) { mutableListOf() }.add(to)
+        }
+
+        val cyclicEdges = detectCycles(adjacencyList)
+
+        // Write to DOT file
+        dependencies.filter { it.first.nodeType.isEnabled && it.second.nodeType.isEnabled }
+            .forEach { (from, to) ->
+                val isCyclic = Pair(from, to) in cyclicEdges
+                val style = if (isCyclic) "[color=red, style=dashed]" else ""
+                dotFile.appendText("  \"${from.path}\" -> \"${to.path}\" $style\n")
+            }
+    }
+
+    private fun detectCycles(graph: Map<NodeData, List<NodeData>>): Set<Pair<NodeData, NodeData>> {
+        val visited = mutableSetOf<NodeData>()
+        val stack = mutableSetOf<NodeData>()
+        val cyclicEdges = mutableSetOf<Pair<NodeData, NodeData>>()
+
+        fun dfs(node: NodeData) {
+            if (node in stack) return
+            if (node !in visited) {
+                visited.add(node)
+                stack.add(node)
+
+                graph[node]?.forEach { neighbor ->
+                    if (neighbor in stack) {
+                        cyclicEdges.add(Pair(node, neighbor))
+                    }
+                    dfs(neighbor)
+                }
+
+                stack.remove(node)
             }
         }
+
+        graph.keys.forEach { node -> if (node !in visited) dfs(node) }
+        return cyclicEdges
     }
+
 
     private fun addNodeLevelsToFile(
         dotFile: File,
