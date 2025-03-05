@@ -8,9 +8,9 @@ class GraphfityPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         val extension = project.extensions.create("graphfityExtension", GraphfityPluginExtension::class.java)
         project.tasks.create("graphfity", GraphfityTask::class.java) {
-            it.graphImagePath.set(extension.graphImagePath)
-            it.projectRootName.set(extension.projectRootName)
-            it.nodeTypesPath.set(extension.nodeTypesPath)
+            it.graphImagePathProperty.set(extension.graphImagePath)
+            it.projectRootNameProperty.set(extension.projectRootName)
+            it.nodeTypesPathProperty.set(extension.nodeTypesPath)
         }
     }
 }
