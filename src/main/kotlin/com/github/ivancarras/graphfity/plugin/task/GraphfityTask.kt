@@ -3,13 +3,13 @@ package com.github.ivancarras.graphfity.plugin.task
 import com.github.ivancarras.graphfity.plugin.model.NodeData
 import com.github.ivancarras.graphfity.plugin.model.NodeType
 import groovy.json.JsonSlurper
+import java.io.File
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
-import java.io.File
 import org.gradle.util.GradleVersion
 
 abstract class GraphfityTask : DefaultTask() {
@@ -94,7 +94,7 @@ abstract class GraphfityTask : DefaultTask() {
     }
 
     private fun generateGraph(dotFile: File) {
-        val dotCommand = listOf("dot", "-Tpng", "-O", DOT_FILE)
+        val dotCommand = listOf("dot", "-Tpng", "-o", GRAPH_PNG, GRAPH_DOT)
         ProcessBuilder(dotCommand)
             .directory(dotFile.parentFile)
             .redirectOutput(ProcessBuilder.Redirect.PIPE)
@@ -146,6 +146,7 @@ abstract class GraphfityTask : DefaultTask() {
         }
     }
 
+    @Suppress("deprecation")
     private fun Iterable<ProjectDependency>.mapToProject(project: Project): List<Project> = mapNotNull {
         // https://docs.gradle.org/8.11/release-notes.html
         // https://github.com/gradle/gradle/issues/30992
@@ -178,13 +179,12 @@ abstract class GraphfityTask : DefaultTask() {
         }
     }
 
-    private fun createDotFile(dotPath: String): File = File(dotPath + DOT_FILE).apply {
+    private fun createDotFile(dotPath: String): File = File(dotPath + GRAPH_DOT).apply {
         delete()
         parentFile.mkdirs()
         appendText(
             "digraph {\n" +
                 "  graph [ranksep=1.2];\n" +
-                "  rankdir=TB; splines=true;\n"
         )
     }
 
@@ -236,6 +236,8 @@ abstract class GraphfityTask : DefaultTask() {
     }
 
     companion object {
-        private const val DOT_FILE = "project.dot"
+        private const val GRAPH_NAME = "graphify"
+        private const val GRAPH_DOT = "$GRAPH_NAME.dot"
+        private const val GRAPH_PNG = "$GRAPH_NAME.png"
     }
 }
