@@ -10,6 +10,7 @@ import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import java.io.File
+import org.gradle.util.GradleVersion
 
 abstract class GraphfityTask : DefaultTask() {
     @Input
@@ -38,16 +39,16 @@ abstract class GraphfityTask : DefaultTask() {
             project = rootProject,
             nodes = nodes,
             dependencies = dependencies,
-            nodeTypes = nodeTypes
+            nodeTypes = nodeTypes,
         )
         obtainNodesLevels(
             rootProjectName = projectRootName,
             dependencies = dependencies,
-            nodeLevel = nodesLevel
+            nodeLevel = nodesLevel,
         )
         addNodesToFile(
             dotFile = dotFile,
-            nodes = nodes
+            nodes = nodes,
         )
         addDependenciesToFile(
             dotFile = dotFile,
@@ -55,10 +56,10 @@ abstract class GraphfityTask : DefaultTask() {
         )
         addNodeLevelsToFile(
             dotFile = dotFile,
-            nodeLevels = nodesLevel
+            nodeLevels = nodesLevel,
         )
         generateGraph(
-            dotFile = dotFile
+            dotFile = dotFile,
         )
     }
 
@@ -125,15 +126,13 @@ abstract class GraphfityTask : DefaultTask() {
         project.configurations.forEach { config ->
             config.dependencies
                 .withType(ProjectDependency::class.java)
-                .map { project.project(it.path) }
-                .filterNot { project == it.project }
+                .mapToProject(project)
                 .forEach { dependencyProject ->
-                    val dependencyProjectNodeData = mapProjectToNode(dependencyProject, nodeTypes)
+                    val dependencyProjectNodeData = mapProjectToNode(project = dependencyProject, nodeTypes = nodeTypes)
                     if (dependencyProjectNodeData != null && projectNodeData != null &&
                         dependencyProjectNodeData.nodeType.isEnabled
                     ) {
                         dependencies.add(Pair(projectNodeData, dependencyProjectNodeData))
-
                         if (dependencyProjectNodeData !in nodes) {
                             obtainNodesAndDependencies(
                                 project = dependencyProject,
@@ -147,22 +146,34 @@ abstract class GraphfityTask : DefaultTask() {
         }
     }
 
+    private fun Iterable<ProjectDependency>.mapToProject(project: Project): List<Project> = mapNotNull {
+        // https://docs.gradle.org/8.11/release-notes.html
+        // https://github.com/gradle/gradle/issues/30992
+        // path attribute starts to be supported on Gradle 8.11 so we need to check the version before using it
+        val dependencyProject = if (GradleVersion.current() > GradleVersion.version("8.11")) {
+            project.project(it.path)
+        } else {
+            it.dependencyProject
+        }
+        if (project == dependencyProject) return@mapNotNull null
+        dependencyProject
+    }
+
     private fun obtainNodesLevels(
         rootProjectName: String,
         dependencies: HashSet<Pair<NodeData, NodeData>>,
         nodeLevel: HashMap<String, Int>,
     ) {
-        var currentLevel = listOf(rootProjectName)
+        var currentLevelPaths = listOf(rootProjectName)
         var level = 0
-        while (currentLevel.isNotEmpty()) {
-            currentLevel
-                .forEach { nodeLevel[it] = level }
+        while (currentLevelPaths.isNotEmpty()) {
+            currentLevelPaths.forEach { nodeLevel[it] = level }
 
-            val nextLevel = dependencies
-                .filter { it.first.path in currentLevel }
+            val nextLevelPaths = dependencies
+                .filter { it.first.path in currentLevelPaths && nodeLevel[it.first.path] == null }
                 .map { it.second.path }
 
-            currentLevel = nextLevel
+            currentLevelPaths = nextLevelPaths
             level++
         }
     }
@@ -172,8 +183,8 @@ abstract class GraphfityTask : DefaultTask() {
         parentFile.mkdirs()
         appendText(
             "digraph {\n" +
-                    "  graph [ranksep=1.2];\n" +
-                    "  rankdir=TB; splines=true;\n"
+                "  graph [ranksep=1.2];\n" +
+                "  rankdir=TB; splines=true;\n"
         )
     }
 
