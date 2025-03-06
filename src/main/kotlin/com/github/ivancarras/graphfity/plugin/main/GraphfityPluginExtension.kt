@@ -15,8 +15,8 @@ abstract class GraphfityPluginExtension {
     }
 
     companion object {
-        private const val DEFAULT_GRAPH_IMAGE_PATH = "gradle/dependency-graph/"
+        private const val DEFAULT_GRAPH_IMAGE_PATH = "./graphfity/"
         private const val DEFAULT_PROJECT_ROOT_NAME = ":app"
-        private const val DEFAULT_NODE_TYPES_PATH = "src/main/resources"
+        private const val DEFAULT_NODE_TYPES_PATH = "./graphfity/"
     }
 }
