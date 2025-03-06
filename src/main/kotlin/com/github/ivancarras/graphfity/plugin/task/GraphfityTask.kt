@@ -1,7 +1,10 @@
 package com.github.ivancarras.graphfity.plugin.task
 
-import com.github.ivancarras.graphfity.plugin.model.NodeData
-import com.github.ivancarras.graphfity.plugin.model.NodeType
+import com.github.ivancarras.graphfity.plugin.model.datastructures.AdjacencyList
+import com.github.ivancarras.graphfity.plugin.model.ProjectModuleData
+import com.github.ivancarras.graphfity.plugin.model.ProjectModuleAdjacencyList
+import com.github.ivancarras.graphfity.plugin.model.ProjectModuleData.Type
+import com.github.ivancarras.graphfity.plugin.model.ProjectModuleNode
 import groovy.json.JsonSlurper
 import java.io.File
 import org.gradle.api.DefaultTask
@@ -14,53 +17,57 @@ import org.gradle.util.GradleVersion
 
 abstract class GraphfityTask : DefaultTask() {
     @Input
-    val nodeTypesPath: Property<String> = project.objects.property(String::class.java)
+    val nodeTypesPathProperty: Property<String> = project.objects.property(String::class.java)
 
     @Input
-    val graphImagePath: Property<String> = project.objects.property(String::class.java)
+    val graphImagePathProperty: Property<String> = project.objects.property(String::class.java)
 
     @Input
-    val projectRootName: Property<String> = project.objects.property(String::class.java)
+    val projectRootNameProperty: Property<String> = project.objects.property(String::class.java)
+
+    private val nodeTypesPath: String by lazy { nodeTypesPathProperty.get() }
+    private val dotPath: String by lazy { graphImagePathProperty.get() }
+    private val projectRootName: String by lazy { projectRootNameProperty.get() }
+    private val types: Set<Type> by lazy { readNodeTypesFile(nodeTypesPath) }
 
     @TaskAction
     fun graphfity() {
+        val adjacencyList: ProjectModuleAdjacencyList = mapProjectToAdjacencyList(
+            project = getRootProject(projectRootName),
+        )
 
-        val nodeTypesPath = nodeTypesPath.get()
-        val nodeTypes = loadNodeTypes(nodeTypesPath)
-        val dotPath = graphImagePath.get()
-        val projectRootName = projectRootName.get()
-        val rootProject = getRootProject(projectRootName)
-        val nodes = HashSet<NodeData>()
-        val dependencies = HashSet<Pair<NodeData, NodeData>>()
-        val nodesLevel = HashMap<String, Int>()
-        val dotFile = createDotFile(dotPath)
+        val adjacencyListString = adjacencyList.adjacencyMap.map {
+            "path: ${it.key.data.path} - dependencies: ${
+                it.value.map {
+                    it.destination.data.path
+                }
+            }"
+        }.joinToString("\n")
 
-        obtainNodesAndDependencies(
-            project = rootProject,
-            nodes = nodes,
-            dependencies = dependencies,
-            nodeTypes = nodeTypes,
-        )
-        obtainNodesLevels(
-            rootProjectName = projectRootName,
-            dependencies = dependencies,
-            nodeLevel = nodesLevel,
-        )
-        addNodesToFile(
-            dotFile = dotFile,
-            nodes = nodes,
-        )
-        addDependenciesToFile(
-            dotFile = dotFile,
-            dependencies = dependencies
-        )
-        addNodeLevelsToFile(
-            dotFile = dotFile,
-            nodeLevels = nodesLevel,
-        )
-        generateGraph(
-            dotFile = dotFile,
-        )
+        println(adjacencyListString)
+
+        /*  obtainNodesLevels(
+             rootProjectName = projectRootName,
+             dependencies = dependencies,
+             nodeLevel = nodesLevel,
+         )
+         addNodesToFile(
+             dotFile = dotFile,
+             nodes = adjacencyList,
+         )
+         addDependenciesToFile(
+             dotFile = dotFile,
+             dependencies = dependencies
+         )
+         addNodeLevelsToFile(
+             dotFile = dotFile,
+             nodeLevels = nodesLevel,
+         )
+         generateGraph(
+             dotFile = dotFile,
+         ) */
+
+        //        val dotFile = createDotFile(dotPath)
     }
 
     private fun getRootProject(projectRootName: String): Project {
@@ -71,25 +78,25 @@ abstract class GraphfityTask : DefaultTask() {
         }
     }
 
-    private fun loadNodeTypes(nodeTypesPath: String): List<NodeType> {
+    private fun readNodeTypesFile(nodeTypesPath: String): Set<Type> {
         val jsonFile = File(nodeTypesPath)
         val jsonObjects = JsonSlurper().parseText(jsonFile.readText())
         return if (jsonObjects is List<*>) {
-            jsonObjects.fold(emptyList()) { acc, item ->
+            jsonObjects.fold(setOf()) { acc, item ->
                 if (item is Map<*, *>) {
-                    acc + NodeType(
+                    acc + Type(
                         name = item["name"] as String,
                         regex = item["regex"] as String,
                         isEnabled = item["isEnabled"] as Boolean,
                         shape = item["shape"] as String,
-                        fillColor = item["fillColor"] as String
+                        fillColor = item["fillColor"] as String,
                     )
                 } else {
                     acc
                 }
             }
         } else {
-            emptyList()
+            error("Malformed json file")
         }
     }
 
@@ -111,34 +118,50 @@ abstract class GraphfityTask : DefaultTask() {
             }
     }
 
-    private fun obtainNodesAndDependencies(
+    private fun mapProjectToAdjacencyList(
         project: Project,
-        nodes: HashSet<NodeData>,
-        dependencies: HashSet<Pair<NodeData, NodeData>>,
-        nodeTypes: List<NodeType>,
+    ): ProjectModuleAdjacencyList {
+        val rootProjectModuleData = buildProjectModuleData(
+            path = project.path,
+            types = types,
+        ) ?: throw IllegalArgumentException("Root project path does not match any node type")
+        val adjacencyList = AdjacencyList<ProjectModuleData>()
+        val rootNode = ProjectModuleNode(rootProjectModuleData)
+        adjacencyList.addNode(rootNode)
+        addChildNodesForProjectDependencies(
+            project = project,
+            parentNode = rootNode,
+            adjacencyList = adjacencyList,
+        )
+        return adjacencyList
+    }
+
+    private fun addChildNodesForProjectDependencies(
+        parentNode: ProjectModuleNode,
+        project: Project,
+        adjacencyList: AdjacencyList<ProjectModuleData>,
     ) {
-        val projectNodeData = mapProjectToNode(project, nodeTypes)
-
-        if (projectNodeData != null && projectNodeData.nodeType.isEnabled) {
-            nodes.add(projectNodeData)
-        }
-
         project.configurations.forEach { config ->
             config.dependencies
                 .withType(ProjectDependency::class.java)
                 .mapToProject(project)
-                .forEach { dependencyProject ->
-                    val dependencyProjectNodeData = mapProjectToNode(project = dependencyProject, nodeTypes = nodeTypes)
-                    if (dependencyProjectNodeData != null && projectNodeData != null &&
-                        dependencyProjectNodeData.nodeType.isEnabled
-                    ) {
-                        dependencies.add(Pair(projectNodeData, dependencyProjectNodeData))
-                        if (dependencyProjectNodeData !in nodes) {
-                            obtainNodesAndDependencies(
-                                project = dependencyProject,
-                                nodes = nodes,
-                                dependencies = dependencies,
-                                nodeTypes = nodeTypes,
+                .filterNot { it.path == project.path }
+                .forEach { childProject ->
+                    buildProjectModuleData(
+                        path = childProject.path,
+                        types = types,
+                    )?.let { dependencyProjectNodeData ->
+                        val childNode = ProjectModuleNode(data = dependencyProjectNodeData)
+                        val isChildNodeAlreadyAdded = adjacencyList.contains(data = dependencyProjectNodeData)
+                        if (!isChildNodeAlreadyAdded) {
+                            adjacencyList.addNode(childNode)
+                        }
+                        adjacencyList.addDirectedEdge(source = parentNode, destination = childNode)
+                        if (!isChildNodeAlreadyAdded) {
+                            addChildNodesForProjectDependencies(
+                                parentNode = childNode,
+                                project = childProject,
+                                adjacencyList = adjacencyList,
                             )
                         }
                     }
@@ -147,22 +170,20 @@ abstract class GraphfityTask : DefaultTask() {
     }
 
     @Suppress("deprecation")
-    private fun Iterable<ProjectDependency>.mapToProject(project: Project): List<Project> = mapNotNull {
+    private fun Iterable<ProjectDependency>.mapToProject(project: Project): List<Project> = map {
         // https://docs.gradle.org/8.11/release-notes.html
         // https://github.com/gradle/gradle/issues/30992
         // path attribute starts to be supported on Gradle 8.11 so we need to check the version before using it
-        val dependencyProject = if (GradleVersion.current() > GradleVersion.version("8.11")) {
+        if (GradleVersion.current() > GradleVersion.version("8.11")) {
             project.project(it.path)
         } else {
             it.dependencyProject
         }
-        if (project == dependencyProject) return@mapNotNull null
-        dependencyProject
     }
 
     private fun obtainNodesLevels(
         rootProjectName: String,
-        dependencies: HashSet<Pair<NodeData, NodeData>>,
+        dependencies: HashSet<Pair<ProjectModuleData, ProjectModuleData>>,
         nodeLevel: HashMap<String, Int>,
     ) {
         var currentLevelPaths = listOf(rootProjectName)
@@ -188,55 +209,56 @@ abstract class GraphfityTask : DefaultTask() {
         )
     }
 
-    private fun addNodeToFile(dotFile: File, nodeData: NodeData) {
-        if (nodeData.nodeType.isEnabled) {
-            dotFile.appendText("node [style=filled, shape = ${nodeData.nodeType.shape} fillcolor=\"${nodeData.nodeType.fillColor}\"];\n")
-            dotFile.appendText("\"${nodeData.path}\"\n")
-        }
-    }
+    /*   private fun addNodeToFile(dotFile: File, projectModuleData: ProjectModuleData) {
+          if (projectModuleData.config.isEnabled) {
+              dotFile.appendText("node [style=filled, shape = ${projectModuleData.config.shape} fillcolor=\"${projectModuleData.config.fillColor}\"];\n")
+              dotFile.appendText("\"${projectModuleData.path}\"\n")
+          }
+      } */
 
-    private fun addNodesToFile(dotFile: File, nodes: HashSet<NodeData>) {
-        nodes.forEach { node ->
-            addNodeToFile(dotFile, node)
-        }
-    }
-
-    private fun mapProjectToNode(project: Project, nodeTypes: List<NodeType>): NodeData? =
-        nodeTypes.firstOrNull { nodeType ->
-            nodeType.regex.toRegex().matches(project.path)
-        }?.let { nodeType ->
-            NodeData(
-                path = project.path, nodeType = nodeType
-            )
-        }
-
-    private fun addDependenciesToFile(
-        dotFile: File,
-        dependencies: HashSet<Pair<NodeData, NodeData>>
-    ) {
-        val adjacencyList = mutableMapOf<NodeData, MutableList<NodeData>>()
-
-        dependencies.forEach { (from, to) ->
-            adjacencyList.computeIfAbsent(from) { mutableListOf() }.add(to)
-        }
-
-        val cyclicEdges = detectCycles(adjacencyList)
-
-        // Write to DOT file
-        dependencies.filter { it.first.nodeType.isEnabled && it.second.nodeType.isEnabled }
-            .forEach { (from, to) ->
-                val isCyclic = Pair(from, to) in cyclicEdges
-                val style = if (isCyclic) "[color=red, style=dashed]" else ""
-                dotFile.appendText("  \"${from.path}\" -> \"${to.path}\" $style\n")
+    /*     private fun addNodesToFile(dotFile: File, nodes: HashSet<ProjectModuleData>) {
+            nodes.forEach { node ->
+                addNodeToFile(dotFile, node)
             }
-    }
+        } */
 
-    private fun detectCycles(graph: Map<NodeData, List<NodeData>>): Set<Pair<NodeData, NodeData>> {
-        val visited = mutableSetOf<NodeData>()
-        val stack = mutableSetOf<NodeData>()
-        val cyclicEdges = mutableSetOf<Pair<NodeData, NodeData>>()
+    private fun buildProjectModuleData(
+        path: String,
+        types: Set<Type>
+    ): ProjectModuleData? =
+        types.find { nodeType ->
+            nodeType.regex.toRegex().matches(path) && nodeType.isEnabled
+        }?.let { nodeType ->
+            ProjectModuleData(path = path, type = nodeType)
+        }
 
-        fun dfs(node: NodeData) {
+    /*    private fun addDependenciesToFile(
+           dotFile: File,
+           dependencies: HashSet<Pair<ProjectModuleData, ProjectModuleData>>
+       ) {
+           val adjacencyList = mutableMapOf<ProjectModuleData, MutableList<ProjectModuleData>>()
+
+           dependencies.forEach { (from, to) ->
+               adjacencyList.computeIfAbsent(from) { mutableListOf() }.add(to)
+           }
+
+           val cyclicEdges = detectCycles(adjacencyList)
+
+           // Write to DOT file
+           dependencies.filter { it.first.config.isEnabled && it.second.config.isEnabled }
+               .forEach { (from, to) ->
+                   val isCyclic = Pair(from, to) in cyclicEdges
+                   val style = if (isCyclic) "[color=red, style=dashed]" else ""
+                   dotFile.appendText("  \"${from.path}\" -> \"${to.path}\" $style\n")
+               }
+       } */
+
+    private fun detectCycles(graph: Map<ProjectModuleData, List<ProjectModuleData>>): Set<Pair<ProjectModuleData, ProjectModuleData>> {
+        val visited = mutableSetOf<ProjectModuleData>()
+        val stack = mutableSetOf<ProjectModuleData>()
+        val cyclicEdges = mutableSetOf<Pair<ProjectModuleData, ProjectModuleData>>()
+
+        fun dfs(node: ProjectModuleData) {
             if (node in stack) return
             if (node !in visited) {
                 visited.add(node)
