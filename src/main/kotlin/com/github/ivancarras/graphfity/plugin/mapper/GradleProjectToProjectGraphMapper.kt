@@ -29,39 +29,51 @@ fun Project.toProjectGraph(rootNode: ProjectModuleNode, nodeTypes: Set<NodeType>
     return adjacencyList
 }
 
+private val configurationTargets = listOf(
+    "implementation",
+    "api",
+    "compileOnly",
+    "runtimeOnly",
+    "ksp",
+    "kapt",
+    "annotationProcessor"
+)
+
 private fun addChildNodesForProjectDependencies(
     parentNode: ProjectModuleNode,
     project: Project,
     nodeTypes: Set<NodeType>,
     adjacencyList: AdjacencyList<ProjectModuleData>,
 ) {
-    project.configurations.forEach { config ->
-        config.dependencies
-            .withType(ProjectDependency::class.java)
-            .mapToProject(project)
-            .filterNot { it.path == project.path }
-            .forEach { childProject ->
-                buildProjectModuleData(
-                    path = childProject.path,
-                    nodeTypes = nodeTypes,
-                )?.let { dependencyProjectNodeData ->
-                    val childNode = ProjectModuleNode(data = dependencyProjectNodeData)
-                    val isChildNodeAlreadyAdded = adjacencyList.contains(node = childNode)
-                    if (!isChildNodeAlreadyAdded) {
-                        adjacencyList.addNode(childNode)
-                    }
-                    adjacencyList.addDirectedEdge(source = parentNode, destination = childNode)
-                    if (!isChildNodeAlreadyAdded) {
-                        addChildNodesForProjectDependencies(
-                            parentNode = childNode,
-                            project = childProject,
-                            adjacencyList = adjacencyList,
-                            nodeTypes = nodeTypes,
-                        )
+    project.configurations
+        .filter { it.name in configurationTargets }
+        .forEach { config ->
+            config.dependencies
+                .withType(ProjectDependency::class.java)
+                .mapToProject(project)
+                .filterNot { it.path == project.path }
+                .forEach { childProject ->
+                    buildProjectModuleData(
+                        path = childProject.path,
+                        nodeTypes = nodeTypes,
+                    )?.let { dependencyProjectNodeData ->
+                        val childNode = ProjectModuleNode(data = dependencyProjectNodeData)
+                        val isChildNodeAlreadyAdded = adjacencyList.contains(node = childNode)
+                        if (!isChildNodeAlreadyAdded) {
+                            adjacencyList.addNode(childNode)
+                        }
+                        adjacencyList.addDirectedEdge(source = parentNode, destination = childNode)
+                        if (!isChildNodeAlreadyAdded) {
+                            addChildNodesForProjectDependencies(
+                                parentNode = childNode,
+                                project = childProject,
+                                adjacencyList = adjacencyList,
+                                nodeTypes = nodeTypes,
+                            )
+                        }
                     }
                 }
-            }
-    }
+        }
 }
 
 

@@ -40,6 +40,7 @@ abstract class GraphfityTask : DefaultTask() {
             nodeTypes = nodeTypes,
         )
         val dot = adjacencyList.toDot(rootNode)
+        println("dot: $dot")
         generateGraphFile(dot = dot)
     }
 

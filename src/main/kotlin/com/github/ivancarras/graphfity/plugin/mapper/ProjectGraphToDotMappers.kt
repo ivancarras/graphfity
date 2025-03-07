@@ -8,41 +8,37 @@ import com.github.ivancarras.graphfity.plugin.model.datastructures.Node
 
 private const val RANK_SEP = 1.2
 
-fun ProjectGraph.toDot(rootNode: ProjectModuleNode): String {
-    val nodesDot = nodes.joinToString("\n") { it.toDot() }
-    val edgesDot = edges.joinToString("\n") { it.toDot() }
-    // val ranksDot = bfsWithLevelMap(rootNode).toDot()
-//
-    return """
-        digraph {
-            graph [ranksep=$RANK_SEP];
-            $nodesDot
-            $edgesDot
-         
-        }
-    """.trimIndent()
+fun ProjectGraph.toDot(rootNode: ProjectModuleNode): String = graphDot {
+    nodesDot(this@toDot)
+    edgesDot(this@toDot)
 }
 
-private fun Node<ProjectModuleData>.toDot(): String = """
-        node [style=filled, shape = ${data.nodeType.shape} fillcolor="${data.nodeType.fillColor}"];
-               "${data.path}"
-               
-    """
+private fun StringBuilder.nodesDot(
+    adjacencyList: ProjectGraph,
+) {
+    adjacencyList.nodes.forEach { appendLine(it.toDot()) }
+}
 
-private fun ProjectModuleEdge.toDot(): String = """
-        "${source.data.path}" -> "${destination.data.path}";
-    """
+private fun StringBuilder.edgesDot(
+    adjacencyList: ProjectGraph,
+) {
+    adjacencyList.edges.forEach { appendLine(it.toDot()) }
+}
 
-private fun Map<Int, List<Node<ProjectModuleData>>>.toDot(): String {
-    val dotString = StringBuilder()
-    this.forEach { (level, nodes) ->
-        dotString.appendLine("{ rank=same;")
-        nodes.forEach { node ->
-            dotString.appendLine("  \"${node.data.path}\";")
-        }
-        dotString.appendLine("}")
-    }
-    return dotString.toString()
+private fun graphDot(content: StringBuilder.() -> Unit): String = buildString {
+    appendLine("digraph {")
+    appendLine("    graph [ranksep=$RANK_SEP];")
+    content()
+    appendLine("}")
+}
+
+private fun Node<ProjectModuleData>.toDot(): String = buildString {
+    appendLine("    node [style=filled, shape=${data.nodeType.shape} fillcolor=\"${data.nodeType.fillColor}\"];")
+    appendLine("        \"${data.path}\"")
+}
+
+private fun ProjectModuleEdge.toDot(): String = buildString {
+    appendLine("    \"${source.data.path}\" -> \"${destination.data.path}\";")
 }
 
 
