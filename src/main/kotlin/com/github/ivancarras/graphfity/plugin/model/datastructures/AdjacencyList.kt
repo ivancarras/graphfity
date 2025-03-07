@@ -20,6 +20,8 @@ class AdjacencyList<T> {
         adjacencyMap[source]?.add(edge)
     }
 
-    fun contains(node: Node<T>): Boolean =
-        adjacencyMap.containsKey(node)
+    fun contains(id: String): Boolean =
+        adjacencyMap.keys.any { it.id == id }
+
+    fun getNode(id: String): Node<T> = adjacencyMap.keys.first { it.id == id }
 }

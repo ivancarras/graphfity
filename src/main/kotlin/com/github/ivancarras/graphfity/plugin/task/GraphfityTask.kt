@@ -1,6 +1,5 @@
 package com.github.ivancarras.graphfity.plugin.task
 
-import com.github.ivancarras.graphfity.plugin.mapper.toRootNode
 import com.github.ivancarras.graphfity.plugin.mapper.toDot
 import com.github.ivancarras.graphfity.plugin.mapper.toProjectGraph
 import com.github.ivancarras.graphfity.plugin.model.ProjectGraph
@@ -34,12 +33,8 @@ abstract class GraphfityTask : DefaultTask() {
     @TaskAction
     fun graphfity() {
         val rootProject = getRootProject(projectRootName)
-        val rootNode = rootProject.toRootNode(nodeTypes)
-        val adjacencyList: ProjectGraph = rootProject.toProjectGraph(
-            rootNode = rootNode,
-            nodeTypes = nodeTypes,
-        )
-        val dot = adjacencyList.toDot(rootNode)
+        val adjacencyList: ProjectGraph = rootProject.toProjectGraph(nodeTypes = nodeTypes)
+        val dot = adjacencyList.toDot()
         println("dot: $dot")
         generateGraphFile(dot = dot)
     }
