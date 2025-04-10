@@ -4,7 +4,6 @@ import com.github.ivancarras.graphfity.plugin.model.ProjectGraph
 import com.github.ivancarras.graphfity.plugin.model.ProjectModuleData
 import com.github.ivancarras.graphfity.plugin.model.ProjectModuleData.NodeType
 import com.github.ivancarras.graphfity.plugin.model.ProjectModuleNode
-import com.github.ivancarras.graphfity.plugin.model.datastructures.AdjacencyList
 import org.gradle.api.Project
 import org.gradle.api.artifacts.ProjectDependency
 import org.gradle.util.GradleVersion
@@ -21,7 +20,7 @@ fun Project.toRootNode(nodeTypes: Set<NodeType>): ProjectModuleNode {
 }
 
 fun Project.toProjectGraph(nodeTypes: Set<NodeType>): ProjectGraph {
-    val adjacencyList = AdjacencyList<ProjectModuleData>()
+    val adjacencyList = ProjectGraph()
     val rootNode = project.toRootNode(nodeTypes)
     adjacencyList.addNode(rootNode)
     addChildNodesForProjectDependencies(
@@ -34,25 +33,15 @@ fun Project.toProjectGraph(nodeTypes: Set<NodeType>): ProjectGraph {
     return adjacencyList
 }
 
-private val configurationTargets = listOf(
-    "implementation",
-    "api",
-    "compileOnly",
-    "runtimeOnly",
-    "ksp",
-    "kapt",
-    "annotationProcessor"
-)
 
 private fun addChildNodesForProjectDependencies(
     parentNode: ProjectModuleNode,
     project: Project,
     nodeTypes: Set<NodeType>,
-    adjacencyList: AdjacencyList<ProjectModuleData>,
+    adjacencyList: ProjectGraph,
     parentLevel: Int,
 ) {
     project.configurations
-        .filter { it.name in configurationTargets }
         .forEach { config ->
             config.dependencies
                 .withType(ProjectDependency::class.java)
@@ -72,6 +61,15 @@ private fun addChildNodesForProjectDependencies(
                             adjacencyList.addNode(childNode)
                         }
                         adjacencyList.addDirectedEdge(source = parentNode, destination = childNode)
+
+                        // To rank correctly the child level, if we find a new dependency with a higher level
+                        // that the previously defined we update the node level
+                        val isNeededToUpdateChildNodeLevel = isChildNodePresent && childLevel >
+                            (adjacencyList.nodes.find { it.id == childNode.id }?.data?.level ?: Int.MAX_VALUE)
+                        if (isNeededToUpdateChildNodeLevel) {
+                            adjacencyList.updateNode(childNode)
+                        }
+
                         if (!isChildNodePresent) {
                             addChildNodesForProjectDependencies(
                                 parentNode = childNode,

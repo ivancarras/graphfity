@@ -35,7 +35,6 @@ abstract class GraphfityTask : DefaultTask() {
         val rootProject = getRootProject(projectRootName)
         val adjacencyList: ProjectGraph = rootProject.toProjectGraph(nodeTypes = nodeTypes)
         val dot = adjacencyList.toDot()
-        println("dot: $dot")
         generateGraphFile(dot = dot)
     }
 

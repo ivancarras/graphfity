@@ -1,8 +1,8 @@
 package com.github.ivancarras.graphfity.plugin.model.datastructures
 
-class AdjacencyList<T> {
+open class AdjacencyList<T> {
 
-    private val adjacencyMap = mutableMapOf<Node<T>, ArrayList<Edge<T>>>()
+    protected val adjacencyMap = mutableMapOf<Node<T>, ArrayList<Edge<T>>>()
 
     val nodes: List<Node<T>>
         get() = adjacencyMap.keys.toList()
@@ -15,13 +15,8 @@ class AdjacencyList<T> {
         return node
     }
 
-    fun addDirectedEdge(source: Node<T>, destination: Node<T>) {
+    open fun addDirectedEdge(source: Node<T>, destination: Node<T>) {
         val edge = Edge(source = source, destination = destination)
         adjacencyMap[source]?.add(edge)
     }
-
-    fun contains(id: String): Boolean =
-        adjacencyMap.keys.any { it.id == id }
-
-    fun getNode(id: String): Node<T> = adjacencyMap.keys.first { it.id == id }
 }

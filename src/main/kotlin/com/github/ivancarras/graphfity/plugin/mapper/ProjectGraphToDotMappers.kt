@@ -28,9 +28,7 @@ private fun StringBuilder.edgesDot(
 private fun StringBuilder.ranksDot(
     adjacencyList: ProjectGraph,
 ) {
-    println("${adjacencyList.nodes.map { "path: ${it.data.path} level: ${it.data.level}" }}")
     adjacencyList.nodes.groupBy { it.data.level }.forEach {
-        // println("Level: ${it.key}-> paths: ${it.value.map { node -> node.data.path }}")
         append("    {rank = same;")
         it.value.forEach { node ->
             append(" \"${node.data.path}\";")
